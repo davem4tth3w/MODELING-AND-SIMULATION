@@ -1,27 +1,20 @@
-/*
- * GLUT Shapes Demo
- *
- * Written by Nigel Stewart November 2003
- *
- * This program is test harness for the sphere, cone
- * and torus shapes in GLUT.
- *
- * Spinning wireframe and smooth shaded shapes are
- * displayed until the ESC or q key is pressed.  The
- * number of geometry stacks and slices can be adjusted
- * using the + and - keys.
- */
-
 #ifdef __APPLE__
-#include <GLUT/glut.h>
 #else
 #include <GL/glut.h>
 #endif
 
 #include <stdlib.h>
+#include <cmath>
 
 static int slices = 25;
 static int stacks = 25;
+
+/* Custom function to draw a cylinder */
+void drawCylinder(GLfloat radius, GLfloat height, GLint slices, GLint stacks) {
+    GLUquadric *quad = gluNewQuadric();
+    gluCylinder(quad, radius, radius, height, slices, stacks);
+    gluDeleteQuadric(quad);
+}
 
 /* GLUT callback Handlers */
 
@@ -34,6 +27,7 @@ static void resize(int width, int height)
     glLoadIdentity();
     glFrustum(-ar, ar, -1.0, 1.0, 2.0, 100.0);
 
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity() ;
 }
@@ -41,7 +35,7 @@ static void resize(int width, int height)
 static void display(void)
 {
     const double t = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-    const double a = t*90.0;
+    const double a = t * 90.0;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glColor3d(0,0,1);
@@ -50,24 +44,56 @@ static void display(void)
     glLoadIdentity();
 
     // Adjust the view by setting the camera position and orientation
-    gluLookAt(0, 0, 5,  // eye position
-              0, 0, 2,  // look-at position
-              0, 1, 0); // up vector
+    gluLookAt(5, 5, 15,  // eye position
+              0, 0, 0,   // look-at position
+              0, 1, 0);  // up vector
 
-    // Translate the objects to the center of the screen
+    // Translate the tank body to the center of the screen
     glPushMatrix();
-    glTranslated(0, 0, -6); // Move the objects along the z-axis
-    glTranslated(0, 0, -1); // Adjust the depth to center the objects
-    glTranslated(-2.4, 0, 0); // Translate along the x-axis to center the first object
-    glRotated(60, 1, 0, 0); // Apply rotation
-    glRotated(a, 0, 0, 1);
-    glutSolidSphere(3, slices, stacks);
+    glTranslated(0, 0, -10);
+    glRotated(a, 0, 1, 0);
+
+    // Tank Body
+    glColor3f(0.5, 0.5, 0.5);
+    glutSolidCube(5);
+
+    // Tank Turret
+    glPushMatrix();
+    glTranslated(0, 2.5, 0);
+    glColor3f(0.3, 0.3, 0.3);
+    glutSolidCube(2);
     glPopMatrix();
 
+    // Tank Main Gun
+    glPushMatrix();
+    glTranslated(0, 3.0, 2.0);
+    glRotated(-45, 1, 0, 0);
+    glColor3f(0.3, 0.3, 0.3);
+    drawCylinder(0.3, 3.0, slices, stacks); // Custom cylinder function
+    glPopMatrix();
+
+    // Tank Tracks
+    glPushMatrix();
+    glColor3f(0.1, 0.1, 0.1);
+    glScaled(1, 0.2, 1);
+    glutSolidTorus(0.5, 2, 10, 10);
+    glPopMatrix();
+
+    // Tank Road Wheels
+    glColor3f(0.3, 0.3, 0.3);
+    for (int i = -2; i <= 2; ++i) {
+        for (int j = -1; j <= 1; ++j) {
+            glPushMatrix();
+            glTranslated(i * 1.5, -3.5, j * 2.5);
+            glutSolidTorus(0.3, 0.8, slices, stacks);
+            glPopMatrix();
+        }
+    }
+
+    glPopMatrix();
 
     glutSwapBuffers();
 }
-
 
 static void key(unsigned char key, int x, int y)
 {
@@ -110,8 +136,6 @@ const GLfloat mat_diffuse[]    = { 0.8f, 0.8f, 0.8f, 1.0f };
 const GLfloat mat_specular[]   = { 1.0f, 1.0f, 1.0f, 1.0f };
 const GLfloat high_shininess[] = { 100.0f };
 
-/* Program entry point */
-
 int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
@@ -119,7 +143,7 @@ int main(int argc, char *argv[])
     glutInitWindowPosition(10,10);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 
-    glutCreateWindow("GLUT Shapes");
+    glutCreateWindow("War Tank");
 
     glutReshapeFunc(resize);
     glutDisplayFunc(display);
