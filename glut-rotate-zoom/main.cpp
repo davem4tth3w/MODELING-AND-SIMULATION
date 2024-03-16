@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <cmath>
 
-static int slices = 25;
-static int stacks = 25;
+static int slices = 50;
+static int stacks = 50;
 static double rotationAngle = 0.0;
 static double zoomFactor = 1.0;
 
@@ -45,8 +45,13 @@ static void display(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+    // Calculate the position of the eye for zooming
+    double eyeX = 5 * zoomFactor;
+    double eyeY = 5 * zoomFactor;
+    double eyeZ = 15 * zoomFactor;
+
     // Adjust the view by setting the camera position and orientation
-    gluLookAt(5, 5, 15 * zoomFactor,  // eye position
+    gluLookAt(eyeX, eyeY, eyeZ,  // eye position
               0, 0, 0,   // look-at position
               0, 1, 0);  // up vector
 
