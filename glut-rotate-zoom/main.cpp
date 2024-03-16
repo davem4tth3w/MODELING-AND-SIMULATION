@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include <cmath>
+#include <iostream>
 
 static int slices = 50;
 static int stacks = 50;
@@ -113,6 +114,8 @@ static void display(void)
     glPopMatrix();
 
     glutSwapBuffers();
+
+
 }
 
 static void key(unsigned char key, int x, int y)
@@ -198,6 +201,13 @@ int main(int argc, char *argv[])
     glMaterialfv(GL_FRONT, GL_DIFFUSE,   mat_diffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR,  mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
+
+        // Print instructions in the terminal
+    std::cout << "Instructions:" << std::endl;
+    std::cout << "Press 'a' to rotate left." << std::endl;
+    std::cout << "Press 'd' to rotate right." << std::endl;
+    std::cout << "Press 'w' to zoom in." << std::endl;
+    std::cout << "Press 's' to zoom out." << std::endl;
 
     glutMainLoop();
 
