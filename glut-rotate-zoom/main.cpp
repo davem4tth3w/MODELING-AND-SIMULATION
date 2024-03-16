@@ -79,16 +79,29 @@ static void display(void)
     glutSolidTorus(0.5, 2, 10, 10);
     glPopMatrix();
 
-    // Tank Road Wheels
+    // Tank Road Wheels with Link
     glColor3f(0.3, 0.3, 0.3);
     for (int i = -2; i <= 2; ++i) {
         for (int j = -1; j <= 1; ++j) {
             glPushMatrix();
             glTranslated(i * 1.5, -3.5, j * 2.5);
             glutSolidTorus(0.3, 0.8, slices, stacks);
+            // Draw link
+            glColor3f(0.1, 0.1, 0.1);
+            glTranslated(0, -0.4, 0);
+            glutSolidCube(0.3);
             glPopMatrix();
         }
     }
+
+    // Tank Hatch
+    glPushMatrix();
+    glColor3f(0.3, 0.3, 0.3);
+    glTranslated(0, 4.0, 0);
+    glBegin(GL_QUADS);
+    glVertex3f(-0.5, 0.0, -0.5); glVertex3f(0.5, 0.0, -0.5); glVertex3f(0.5, 0.0, 0.5); glVertex3f(-0.5, 0.0, 0.5);
+    glEnd();
+    glPopMatrix();
 
     glPopMatrix();
 
