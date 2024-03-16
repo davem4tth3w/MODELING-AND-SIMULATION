@@ -8,6 +8,8 @@
 
 static int slices = 25;
 static int stacks = 25;
+static double rotationAngle = 0.0;
+static double zoomFactor = 1.0;
 
 /* Custom function to draw a cylinder */
 void drawCylinder(GLfloat radius, GLfloat height, GLint slices, GLint stacks) {
@@ -44,14 +46,14 @@ static void display(void)
     glLoadIdentity();
 
     // Adjust the view by setting the camera position and orientation
-    gluLookAt(5, 5, 15,  // eye position
+    gluLookAt(5, 5, 15 * zoomFactor,  // eye position
               0, 0, 0,   // look-at position
               0, 1, 0);  // up vector
 
     // Translate the tank body to the center of the screen
     glPushMatrix();
     glTranslated(0, 0, -10);
-    glRotated(a, 0, 1, 0);
+    glRotated(rotationAngle, 0, 1, 0);
 
     // Tank Body
     glColor3f(0.5, 0.5, 0.5);
@@ -114,14 +116,21 @@ static void key(unsigned char key, int x, int y)
     {
         case 27 :
         case 'q':
-            exit(0);
+            rotationAngle -= 5.0;
             break;
-
+        case 'e':
+            rotationAngle += 5.0;
+            break;
+        case 'w':
+            zoomFactor *= 0.9;
+            break;
+        case 's':
+            zoomFactor /= 0.9;
+            break;
         case '+':
             slices++;
             stacks++;
             break;
-
         case '-':
             if (slices>3 && stacks>3)
             {
